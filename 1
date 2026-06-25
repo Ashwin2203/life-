@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>For You</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffd6e8, #fff1f7);
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding: 24px;
+    color: #3a1f2b;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 620px;
+    margin: 0 auto;
+    padding-top: 60px;
+}
+
+h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1em;
+    color: #6b3d50;
+    margin-bottom: 30px;
+}
+
+button {
+    margin: 10px;
+    padding: 14px 26px;
+    font-size: 17px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#yesBtn {
+    background-color: #ff4f93;
+    color: white;
+}
+
+#yesBtn:hover {
+    transform: scale(1.05);
+    background-color: #e93e82;
+}
+
+#noBtn {
+    background-color: white;
+    color: #3a1f2b;
+    border: 1px solid #ffc1da;
+}
+
+#noBtn:hover {
+    transform: scale(1.03);
+}
+
+#answerBox {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.8s ease;
+    margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 0 20px;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(255, 79, 147, 0.18);
+}
+
+#answerBox.show {
+    opacity: 1;
+    max-height: 1500px;
+    padding: 24px 20px;
+}
+
+#answerBox h2 {
+    color: #ff4f93;
+    margin-bottom: 8px;
+}
+
+#answerBox p {
+    color: #5a3343;
+    line-height: 1.5;
+}
+
+iframe {
+    width: 100%;
+    height: 620px;
+    border: none;
+    margin-top: 20px;
+    border-radius: 14px;
+}
+
+#funfact {
+    display: none;
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: #7a5a66;
+}
+
+.confetti-piece {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: 0;
+    animation: fall 2.5s linear forwards;
+    z-index: 999;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 18px;
+    }
+
+    .container {
+        padding-top: 45px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        line-height: 1.2;
+    }
+
+    .subtitle {
+        font-size: 0.95em;
+    }
+
+    button {
+        width: 100%;
+        max-width: 320px;
+        font-size: 18px;
+        padding: 15px 20px;
+    }
+
+    #answerBox {
+        margin-top: 25px;
+    }
+
+    iframe {
+        height: 680px;
+    }
+}
+</style>
+</head>
+
+<body onmousemove="moveButton(event)">
+
+<div class="container">
+
+    <h1>Do you want to get to know me?</h1>
+    <p class="subtitle">No pressure. Just an honest question.</p>
+
+    <button id="yesBtn" onclick="handleChoice('yes')">Yes 😊</button>
+    <button id="noBtn" onclick="handleChoice('no')">Nope 😓</button>
+
+    <div id="answerBox">
+        <h2>Wow nice… 😊</h2>
+        <p>I’m happy you’re open to this.</p>
+        <p>Tell me a little about yourself. Be honest, simple and real.</p>
+
+        <!-- HIER DEIN TALLY FORMULAR EINSETZEN -->
+        <iframe 
+            src=https://tally.so/r/5BQB7d
+            loading="lazy">
+        </iframe>
+    </div>
+
+    <div id="funfact">
+        Fun Fact: This little page exists because I prefer doing something real instead of sending boring messages.
+    </div>
+
+</div>
+
+<script>
+let noClicks = 0;
+
+function handleChoice(choice) {
+    if (choice === 'yes') {
+        const answerBox = document.getElementById('answerBox');
+        answerBox.classList.add('show');
+
+        createConfetti();
+
+        setTimeout(() => {
+            document.getElementById('funfact').style.display = 'block';
+        }, 2500);
+
+        setTimeout(() => {
+            answerBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 600);
+
+    } else {
+        noClicks++;
+
+        if (noClicks === 1) {
+            alert('Error… maybe try the other button? 😅');
+        }
+    }
+}
+
+function moveButton(event) {
+    if (noClicks < 1) return;
+
+    const btn = document.getElementById('noBtn');
+    const rect = btn.getBoundingClientRect();
+
+    const distance = Math.hypot(
+        event.clientX - (rect.left + rect.width / 2),
+        event.clientY - (rect.top + rect.height / 2)
+    );
+
+    if (distance < 120) {
+        btn.style.position = 'absolute';
+        btn.style.left = Math.random() * (window.innerWidth - 120) + 'px';
+        btn.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+    }
+}
+
+function createConfetti() {
+    const colors = ['#ff4f93', '#ffcc00', '#7bdff2', '#b2f7ef', '#f7aef8'];
+
+    for (let i = 0; i < 90; i++) {
+        const div = document.createElement('div');
+        div.classList.add('confetti-piece');
+
+        div.style.left = Math.random() * 100 + 'vw';
+        div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        div.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+
+        document.body.appendChild(div);
+
+        setTimeout(() => div.remove(), 3500);
+    }
+}
+</script>
+
+</body>
+</html>  
